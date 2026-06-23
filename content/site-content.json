@@ -1,0 +1,164 @@
+{
+  "updatedAt": "2026-06-23T00:00:00.000Z",
+  "siteConfig": {
+    "nome": "1000 Imóveis",
+    "slogan": "Desde 2002 conectando pessoas aos imóveis certos",
+    "creci": "CRECI 2305-J",
+    "whatsapp": "5547999999999",
+    "email": "atendimento@1000imoveis.com.br",
+    "endereco": "Rua Lauro Muller, 149, sala 10, Itajaí/SC",
+    "horario": "Segunda a sexta, das 8h30 às 18h",
+    "site": "1000imoveis.com.br",
+    "facebook": "https://www.facebook.com/1000imoveisitajai/",
+    "instagram": "",
+    "hero": {
+      "titulo": "Encontre seu imóvel ideal em Itajaí",
+      "subtitulo": "Venda e locação de casas, apartamentos, salas comerciais e terrenos com atendimento próximo e conhecimento local.",
+      "imagem": "/images/hero-itajai.jpg",
+      "botaoPrimario": "Ver imóveis",
+      "botaoSecundario": "Anunciar meu imóvel"
+    }
+  },
+  "imoveis": [
+    {
+      "id": "apt-centro-itajai",
+      "slug": "apartamento-venda-centro-itajai",
+      "titulo": "Apartamento para venda no Centro de Itajaí",
+      "finalidade": "Venda",
+      "tipo": "Apartamento",
+      "preco": "R$ 690.000",
+      "bairro": "Centro",
+      "cidade": "Itajaí",
+      "endereco": "Centro, Itajaí/SC",
+      "descricaoCurta": "Apartamento bem localizado, próximo a serviços, escolas e acesso rápido à Beira-Rio.",
+      "descricaoCompleta": "Apartamento com planta funcional, ambientes iluminados e localização estratégica no Centro de Itajaí. Ideal para quem busca praticidade no dia a dia, com comércio, serviços, escolas e vias de acesso a poucos minutos.",
+      "quartos": 3,
+      "banheiros": 2,
+      "vagas": 1,
+      "area": "92 m²",
+      "imagens": [
+        "/images/imovel-apartamento-centro.jpg",
+        "/images/imovel-apartamento-fazenda.jpg",
+        "/images/imovel-kitnet-sao-vicente.jpg"
+      ],
+      "destaque": true,
+      "ativo": true
+    },
+    {
+      "id": "casa-cordeiros-locacao",
+      "slug": "casa-locacao-cordeiros-itajai",
+      "titulo": "Casa para locação no bairro Cordeiros",
+      "finalidade": "Locação",
+      "tipo": "Casa",
+      "preco": "R$ 3.200/mês",
+      "bairro": "Cordeiros",
+      "cidade": "Itajaí",
+      "endereco": "Cordeiros, Itajaí/SC",
+      "descricaoCurta": "Casa térrea com quintal, vaga coberta e ambientes integrados para rotina familiar.",
+      "descricaoCompleta": "Casa para locação em Cordeiros com espaços bem distribuídos, sala arejada, cozinha prática e área externa agradável. Uma opção confortável para famílias que desejam morar em bairro com estrutura completa.",
+      "quartos": 2,
+      "banheiros": 2,
+      "vagas": 2,
+      "area": "110 m²",
+      "imagens": [
+        "/images/imovel-casa-cordeiros.jpg",
+        "/images/imovel-apartamento-centro.jpg",
+        "/images/imovel-terreno-itaipava.jpg"
+      ],
+      "destaque": true,
+      "ativo": true
+    },
+    {
+      "id": "sala-centro-locacao",
+      "slug": "sala-comercial-locacao-centro-itajai",
+      "titulo": "Sala comercial para locação no Centro",
+      "finalidade": "Locação",
+      "tipo": "Sala Comercial",
+      "preco": "R$ 2.400/mês",
+      "bairro": "Centro",
+      "cidade": "Itajaí",
+      "endereco": "Centro, Itajaí/SC",
+      "descricaoCurta": "Sala comercial pronta para receber escritório, consultório ou atendimento profissional.",
+      "descricaoCompleta": "Sala comercial em região central, com bom fluxo, fácil acesso e estrutura adequada para diferentes tipos de negócio. Imóvel indicado para profissionais que precisam de presença local e endereço funcional.",
+      "banheiros": 1,
+      "vagas": 1,
+      "area": "48 m²",
+      "imagens": [
+        "/images/imovel-sala-comercial.jpg",
+        "/images/imovel-apartamento-centro.jpg",
+        "/images/imovel-apartamento-fazenda.jpg"
+      ],
+      "destaque": true,
+      "ativo": true
+    },
+    {
+      "id": "terreno-itaipava-venda",
+      "slug": "terreno-venda-itaipava-itajai",
+      "titulo": "Terreno à venda em Itaipava",
+      "finalidade": "Venda",
+      "tipo": "Terreno",
+      "preco": "R$ 380.000",
+      "bairro": "Itaipava",
+      "cidade": "Itajaí",
+      "endereco": "Itaipava, Itajaí/SC",
+      "descricaoCurta": "Terreno em área tranquila, com potencial para residência ou investimento.",
+      "descricaoCompleta": "Terreno à venda em Itaipava, região em crescimento de Itajaí. Uma alternativa interessante para construção própria, investimento de médio prazo ou projeto residencial sob medida.",
+      "area": "360 m²",
+      "imagens": [
+        "/images/imovel-terreno-itaipava.jpg",
+        "/images/imovel-casa-cordeiros.jpg",
+        "/images/hero-itajai.jpg"
+      ],
+      "destaque": true,
+      "ativo": true
+    },
+    {
+      "id": "apt-fazenda-venda",
+      "slug": "apartamento-venda-fazenda-itajai",
+      "titulo": "Apartamento para venda na Fazenda",
+      "finalidade": "Venda",
+      "tipo": "Apartamento",
+      "preco": "R$ 820.000",
+      "bairro": "Fazenda",
+      "cidade": "Itajaí",
+      "endereco": "Fazenda, Itajaí/SC",
+      "descricaoCurta": "Apartamento moderno em bairro valorizado, com sacada e boa incidência de luz natural.",
+      "descricaoCompleta": "Apartamento no bairro Fazenda com acabamento atual, sacada, ambientes integrados e localização próxima a mercados, escolas e acesso às principais vias da cidade.",
+      "quartos": 2,
+      "banheiros": 2,
+      "vagas": 2,
+      "area": "78 m²",
+      "imagens": [
+        "/images/imovel-apartamento-fazenda.jpg",
+        "/images/imovel-apartamento-centro.jpg",
+        "/images/imovel-sala-comercial.jpg"
+      ],
+      "destaque": true,
+      "ativo": true
+    },
+    {
+      "id": "kitnet-sao-vicente-locacao",
+      "slug": "kitnet-locacao-sao-vicente-itajai",
+      "titulo": "Kitnet para locação em São Vicente",
+      "finalidade": "Locação",
+      "tipo": "Kitnet",
+      "preco": "R$ 1.450/mês",
+      "bairro": "São Vicente",
+      "cidade": "Itajaí",
+      "endereco": "São Vicente, Itajaí/SC",
+      "descricaoCurta": "Kitnet compacta, bem localizada e prática para quem busca economia e mobilidade.",
+      "descricaoCompleta": "Kitnet para locação em São Vicente, com ambiente integrado, boa iluminação e localização conveniente. Excelente para estudantes, profissionais ou quem deseja morar com praticidade.",
+      "quartos": 1,
+      "banheiros": 1,
+      "vagas": 0,
+      "area": "32 m²",
+      "imagens": [
+        "/images/imovel-kitnet-sao-vicente.jpg",
+        "/images/imovel-apartamento-centro.jpg",
+        "/images/imovel-sala-comercial.jpg"
+      ],
+      "destaque": true,
+      "ativo": true
+    }
+  ]
+}
