@@ -47,10 +47,11 @@ export function HomePage({ content }: HomePageProps) {
         <div className="relative mx-auto flex min-h-[calc(92svh-7rem)] max-w-7xl flex-col justify-center px-4 pb-8 sm:px-6 lg:px-8">
           <div className="max-w-3xl animate-enter">
             <p className="mb-5 inline-flex rounded-[8px] border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-gold backdrop-blur">
-              {config.nome} | {config.creci}
+              {config.nome}
             </p>
-            <h1 className="max-w-3xl text-4xl font-bold leading-[1.05] tracking-normal sm:text-5xl lg:text-6xl">
-              {config.hero.titulo}
+            <h1 className="max-w-4xl text-4xl font-bold leading-[1.05] tracking-normal sm:text-5xl lg:text-6xl">
+              <span className="block text-brand-gold drop-shadow-sm">{config.nome}</span>
+              <span className="mt-3 block text-white">{config.hero.titulo}</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/82">{config.hero.subtitulo}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">

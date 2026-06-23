@@ -59,11 +59,8 @@ export function Header({ config }: HeaderProps) {
             />
           </span>
           <span className="hidden leading-tight sm:block">
-            <span className={`block text-sm font-semibold ${isSolid ? "text-neutral-950" : "text-white"}`}>
+            <span className={`block text-base font-bold ${isSolid ? "text-neutral-950" : "text-white"}`}>
               1000 Imóveis
-            </span>
-            <span className={`block text-xs ${isSolid ? "text-neutral-500" : "text-white/75"}`}>
-              {config.creci}
             </span>
           </span>
         </Link>

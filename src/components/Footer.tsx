@@ -25,7 +25,6 @@ export function Footer({ config }: FooterProps) {
             </span>
             <div>
               <p className="font-semibold">{config.nome}</p>
-              <p className="text-sm text-white/60">{config.creci}</p>
             </div>
           </div>
           <p className="max-w-sm text-sm leading-6 text-white/68">{config.slogan}</p>
