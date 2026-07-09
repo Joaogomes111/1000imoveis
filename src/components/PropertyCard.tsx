@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Bath, BedDouble, Car, ChevronLeft, ChevronRight, MapPin, MessageCircle, Ruler } from "lucide-react";
-import { useRef, useState, type TouchEvent } from "react";
+import { useState } from "react";
 
 import { buildWhatsappUrl, propertyWhatsappMessage, resolveWhatsappNumber } from "@/lib/whatsapp";
 import type { Imovel, SiteConfig } from "@/types/content";
@@ -14,18 +14,10 @@ type PropertyCardProps = {
   index?: number;
 };
 
-type TouchState = {
-  startX: number;
-  startY: number;
-  lastY: number;
-  mode: "horizontal" | "vertical" | null;
-};
-
 export function PropertyCard({ imovel, config, index = 0 }: PropertyCardProps) {
   const whatsappUrl = buildWhatsappUrl(resolveWhatsappNumber(config), propertyWhatsappMessage(imovel));
   const images = imovel.imagens.length ? imovel.imagens : ["/images/imovel-apartamento-centro.jpg"];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const touchState = useRef<TouchState | null>(null);
   const normalizedIndex = currentImageIndex % images.length;
   const hasMultipleImages = images.length > 1;
 
@@ -37,64 +29,12 @@ export function PropertyCard({ imovel, config, index = 0 }: PropertyCardProps) {
     setCurrentImageIndex((value) => (value + 1) % images.length);
   }
 
-  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
-    if (event.touches.length !== 1) {
-      touchState.current = null;
-      return;
-    }
-
-    const touch = event.touches[0];
-    touchState.current = {
-      startX: touch.clientX,
-      startY: touch.clientY,
-      lastY: touch.clientY,
-      mode: null,
-    };
-  }
-
-  function handleTouchMove(event: TouchEvent<HTMLDivElement>) {
-    const state = touchState.current;
-    const touch = event.touches[0];
-
-    if (!state || !touch) {
-      return;
-    }
-
-    const deltaX = touch.clientX - state.startX;
-    const deltaY = touch.clientY - state.startY;
-    const absX = Math.abs(deltaX);
-    const absY = Math.abs(deltaY);
-
-    if (!state.mode && Math.max(absX, absY) > 8) {
-      state.mode = absY > absX ? "vertical" : "horizontal";
-    }
-
-    if (state.mode === "vertical") {
-      if (event.cancelable) {
-        event.preventDefault();
-      }
-
-      window.scrollBy(0, state.lastY - touch.clientY);
-      state.lastY = touch.clientY;
-    }
-  }
-
-  function handleTouchEnd() {
-    touchState.current = null;
-  }
-
   return (
     <article
       className="property-card animate-card min-w-[82vw] snap-start overflow-hidden rounded-[8px] border border-neutral-200 bg-white shadow-sm transition duration-300 sm:min-w-[360px] md:min-w-0"
       style={{ animationDelay: `${Math.min(index * 80, 360)}ms` }}
     >
-      <div
-        className="property-card-media relative aspect-[4/3] overflow-hidden bg-neutral-200"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
-      >
+      <div className="property-card-media relative aspect-[4/3] overflow-hidden bg-neutral-200">
         <Image
           src={images[normalizedIndex]}
           alt={imovel.titulo}

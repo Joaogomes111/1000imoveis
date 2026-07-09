@@ -78,7 +78,7 @@ textarea {
   overscroll-behavior-x: contain;
   scroll-padding-inline: 1rem;
   scrollbar-width: none;
-  touch-action: pan-x pan-y;
+  touch-action: pan-y;
 }
 
 .property-carousel::-webkit-scrollbar {
@@ -87,7 +87,7 @@ textarea {
 
 .property-card,
 .property-card-media {
-  touch-action: pan-x pan-y;
+  touch-action: pan-y;
 }
 
 .property-card-image {
