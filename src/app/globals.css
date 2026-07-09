@@ -76,8 +76,6 @@ textarea {
 .property-carousel {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: 1rem;
   scrollbar-width: none;
   touch-action: pan-y;
 }
@@ -88,7 +86,6 @@ textarea {
 
 .property-carousel.is-dragging {
   cursor: grabbing;
-  scroll-snap-type: none;
   scroll-behavior: auto;
   user-select: none;
 }

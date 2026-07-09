@@ -31,7 +31,7 @@ export function PropertyCard({ imovel, config, index = 0 }: PropertyCardProps) {
 
   return (
     <article
-      className="property-card animate-card min-w-[82vw] snap-start overflow-hidden rounded-[8px] border border-neutral-200 bg-white shadow-sm transition duration-300 sm:min-w-[360px] md:min-w-0"
+      className="property-card animate-card min-w-[82vw] overflow-hidden rounded-[8px] border border-neutral-200 bg-white shadow-sm transition duration-300 sm:min-w-[360px] md:min-w-0"
       style={{ animationDelay: `${Math.min(index * 80, 360)}ms` }}
     >
       <div className="property-card-media relative aspect-[4/3] overflow-hidden bg-neutral-200">

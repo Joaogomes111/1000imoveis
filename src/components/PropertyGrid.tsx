@@ -16,8 +16,6 @@ type DragState = {
   startY: number;
   scrollLeft: number;
   mode: "horizontal" | "vertical" | null;
-  frame: number | null;
-  nextLeft: number;
   didDrag: boolean;
 };
 
@@ -35,13 +33,6 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
     );
   }
 
-  function stopAnimationFrame(state: DragState) {
-    if (state.frame) {
-      window.cancelAnimationFrame(state.frame);
-      state.frame = null;
-    }
-  }
-
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     const carousel = carouselRef.current;
 
@@ -55,8 +46,6 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
       startY: event.clientY,
       scrollLeft: carousel.scrollLeft,
       mode: null,
-      frame: null,
-      nextLeft: carousel.scrollLeft,
       didDrag: false,
     };
   }
@@ -89,15 +78,7 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
     }
 
     state.didDrag = true;
-    state.nextLeft = state.scrollLeft - deltaX;
-
-    if (!state.frame) {
-      state.frame = window.requestAnimationFrame(() => {
-        carousel.scrollLeft = state.nextLeft;
-        state.frame = null;
-      });
-    }
-
+    carousel.scrollLeft = state.scrollLeft - deltaX;
     event.preventDefault();
   }
 
@@ -109,7 +90,6 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
       return;
     }
 
-    stopAnimationFrame(state);
     carousel.classList.remove("is-dragging");
 
     if (state.mode === "horizontal" && carousel.hasPointerCapture(event.pointerId)) {
@@ -138,7 +118,7 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
   return (
     <div
       ref={carouselRef}
-      className="property-carousel -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-3"
+      className="property-carousel -mx-4 flex gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-3"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={finishPointerDrag}
