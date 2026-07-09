@@ -16,6 +16,8 @@ type DragState = {
   startY: number;
   scrollLeft: number;
   mode: "horizontal" | "vertical" | null;
+  frame: number | null;
+  nextLeft: number;
   didDrag: boolean;
 };
 
@@ -33,6 +35,13 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
     );
   }
 
+  function stopAnimationFrame(state: DragState) {
+    if (state.frame) {
+      window.cancelAnimationFrame(state.frame);
+      state.frame = null;
+    }
+  }
+
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     const carousel = carouselRef.current;
 
@@ -46,6 +55,8 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
       startY: event.clientY,
       scrollLeft: carousel.scrollLeft,
       mode: null,
+      frame: null,
+      nextLeft: carousel.scrollLeft,
       didDrag: false,
     };
   }
@@ -63,29 +74,53 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
     const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);
 
-    if (!state.mode && Math.max(absX, absY) > 8) {
-      state.mode = absX > absY ? "horizontal" : "vertical";
+    if (!state.mode && Math.max(absX, absY) > 12) {
+      if (absX > absY * 1.35) {
+        state.mode = "horizontal";
+        carousel.classList.add("is-dragging");
+        carousel.setPointerCapture(event.pointerId);
+      } else {
+        state.mode = "vertical";
+      }
     }
 
-    if (state.mode === "horizontal") {
-      state.didDrag = true;
-      carousel.scrollLeft = state.scrollLeft - deltaX;
-      event.preventDefault();
+    if (state.mode !== "horizontal") {
+      return;
     }
+
+    state.didDrag = true;
+    state.nextLeft = state.scrollLeft - deltaX;
+
+    if (!state.frame) {
+      state.frame = window.requestAnimationFrame(() => {
+        carousel.scrollLeft = state.nextLeft;
+        state.frame = null;
+      });
+    }
+
+    event.preventDefault();
   }
 
   function finishPointerDrag(event: PointerEvent<HTMLDivElement>) {
     const state = dragState.current;
+    const carousel = carouselRef.current;
 
-    if (!state || state.pointerId !== event.pointerId) {
+    if (!state || !carousel || state.pointerId !== event.pointerId) {
       return;
+    }
+
+    stopAnimationFrame(state);
+    carousel.classList.remove("is-dragging");
+
+    if (state.mode === "horizontal" && carousel.hasPointerCapture(event.pointerId)) {
+      carousel.releasePointerCapture(event.pointerId);
     }
 
     if (state.didDrag) {
       suppressClick.current = true;
       window.setTimeout(() => {
         suppressClick.current = false;
-      }, 0);
+      }, 80);
     }
 
     dragState.current = null;
@@ -98,7 +133,6 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
 
     event.preventDefault();
     event.stopPropagation();
-    suppressClick.current = false;
   }
 
   return (
