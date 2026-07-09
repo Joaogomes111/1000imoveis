@@ -39,9 +39,6 @@ export function Footer({ config }: FooterProps) {
             <Link href="/sobre" className="transition hover:text-brand-gold">
               Sobre
             </Link>
-            <Link href="/#anuncie" className="transition hover:text-brand-gold">
-              Anuncie seu imóvel
-            </Link>
             <Link href="/contato" className="transition hover:text-brand-gold">
               Contato
             </Link>

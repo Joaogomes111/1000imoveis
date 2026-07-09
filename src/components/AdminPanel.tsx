@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff, LogOut, Plus, Save, Trash2 } from "lucide-react";
 
 import { finalidades, tiposImovel } from "@/lib/options";
@@ -194,6 +194,32 @@ export function AdminPanel() {
     updateContent({ ...content, imoveis: nextImoveis });
   }
 
+  async function handleHeroImageUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const dataUrl = await readFileAsDataUrl(file);
+    updateHero("imagem", dataUrl);
+    event.target.value = "";
+  }
+
+  async function handlePropertyImagesUpload(event: ChangeEvent<HTMLInputElement>) {
+    if (!selectedImovel) {
+      return;
+    }
+
+    const files = Array.from(event.target.files ?? []);
+    if (!files.length) {
+      return;
+    }
+
+    const dataUrls = await Promise.all(files.map(readFileAsDataUrl));
+    updateImovel("imagens", [...selectedImovel.imagens, ...dataUrls]);
+    event.target.value = "";
+  }
+
   if (status === "checking") {
     return (
       <div className="grid min-h-[55vh] place-items-center">
@@ -286,6 +312,7 @@ export function AdminPanel() {
                 onChange={(value) => updateHero("subtitulo", value)}
               />
               <TextInput label="Imagem" value={content.siteConfig.hero.imagem} onChange={(value) => updateHero("imagem", value)} />
+              <FileInput label="Subir imagem do banner pelo PC" onChange={handleHeroImageUpload} />
               <div className="grid gap-4 sm:grid-cols-2">
                 <TextInput
                   label="Botão principal"
@@ -420,6 +447,7 @@ export function AdminPanel() {
                     value={selectedImovel.imagens.join("\n")}
                     onChange={(value) => updateImovel("imagens", value.split("\n").map((line) => line.trim()).filter(Boolean))}
                   />
+                  <FileInput label="Adicionar fotos do PC" multiple onChange={handlePropertyImagesUpload} />
                   <div className="grid gap-3 sm:grid-cols-2">
                     <ToggleInput label="Imóvel ativo" checked={selectedImovel.ativo} onChange={(value) => updateImovel("ativo", value)} />
                     <ToggleInput
@@ -458,6 +486,29 @@ function TextInput({ label, value, onChange }: { label: string; value: string; o
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="focus-ring h-11 rounded-[8px] border border-neutral-200 bg-white px-3 text-neutral-950"
+      />
+    </label>
+  );
+}
+
+function FileInput({
+  label,
+  multiple = false,
+  onChange,
+}: {
+  label: string;
+  multiple?: boolean;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <label className="grid gap-2 text-sm font-semibold text-neutral-700">
+      {label}
+      <input
+        type="file"
+        accept="image/*"
+        multiple={multiple}
+        onChange={onChange}
+        className="focus-ring rounded-[8px] border border-dashed border-neutral-300 bg-slate-50 px-3 py-3 text-sm text-neutral-700 file:mr-4 file:rounded-[8px] file:border-0 file:bg-brand-black file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
       />
     </label>
   );
@@ -558,4 +609,13 @@ function slugify(value: string) {
     .replace(/\p{Diacritic}/gu, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function readFileAsDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
 }

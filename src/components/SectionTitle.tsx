@@ -7,7 +7,7 @@ type SectionTitleProps = {
 
 export function SectionTitle({ eyebrow, title, subtitle, align = "left" }: SectionTitleProps) {
   return (
-    <div className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
+    <div className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl pr-16 sm:pr-0"}>
       {eyebrow ? (
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-brand-gold-dark">{eyebrow}</p>
       ) : null}

@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Bath, BedDouble, Car, MapPin, MessageCircle, Ruler } from "lucide-react";
+import { Bath, BedDouble, Car, ChevronLeft, ChevronRight, MapPin, MessageCircle, Ruler } from "lucide-react";
+import { useState } from "react";
 
 import { buildWhatsappUrl, propertyWhatsappMessage, resolveWhatsappNumber } from "@/lib/whatsapp";
 import type { Imovel, SiteConfig } from "@/types/content";
@@ -13,26 +16,70 @@ type PropertyCardProps = {
 
 export function PropertyCard({ imovel, config, index = 0 }: PropertyCardProps) {
   const whatsappUrl = buildWhatsappUrl(resolveWhatsappNumber(config), propertyWhatsappMessage(imovel));
+  const images = imovel.imagens.length ? imovel.imagens : ["/images/imovel-apartamento-centro.jpg"];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const normalizedIndex = currentImageIndex % images.length;
+  const hasMultipleImages = images.length > 1;
+
+  function showPreviousImage() {
+    setCurrentImageIndex((value) => (value - 1 + images.length) % images.length);
+  }
+
+  function showNextImage() {
+    setCurrentImageIndex((value) => (value + 1) % images.length);
+  }
 
   return (
     <article
-      className="animate-card group overflow-hidden rounded-[8px] border border-neutral-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+      className="animate-card group min-w-[82vw] snap-start overflow-hidden rounded-[8px] border border-neutral-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:min-w-[360px] md:min-w-0"
       style={{ animationDelay: `${Math.min(index * 80, 360)}ms` }}
     >
-      <Link href={`/imoveis/${imovel.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
-          <Image
-            src={imovel.imagens[0]}
-            alt={imovel.titulo}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition duration-500 group-hover:scale-105"
-          />
-          <div className="absolute left-3 top-3 rounded-[8px] bg-brand-gold px-3 py-1 text-xs font-bold text-black">
-            {imovel.finalidade}
-          </div>
+      <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
+        <Image
+          src={images[normalizedIndex]}
+          alt={imovel.titulo}
+          fill
+          sizes="(max-width: 768px) 82vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover transition duration-500 group-hover:scale-105"
+        />
+        <div className="absolute left-3 top-3 rounded-[8px] bg-brand-gold px-3 py-1 text-xs font-bold text-black">
+          {imovel.finalidade}
         </div>
-      </Link>
+
+        {hasMultipleImages ? (
+          <>
+            <button
+              type="button"
+              onClick={showPreviousImage}
+              className="focus-ring absolute left-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition hover:bg-black/75"
+              aria-label="Foto anterior"
+            >
+              <ChevronLeft size={19} />
+            </button>
+            <button
+              type="button"
+              onClick={showNextImage}
+              className="focus-ring absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur transition hover:bg-black/75"
+              aria-label="Próxima foto"
+            >
+              <ChevronRight size={19} />
+            </button>
+            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 rounded-full bg-black/45 px-2 py-1 backdrop-blur">
+              {images.map((image, imageIndex) => (
+                <button
+                  key={`${image}-${imageIndex}`}
+                  type="button"
+                  onClick={() => setCurrentImageIndex(imageIndex)}
+                  className={`h-1.5 rounded-full transition ${
+                    imageIndex === normalizedIndex ? "w-5 bg-brand-gold" : "w-1.5 bg-white/70"
+                  }`}
+                  aria-label={`Ver foto ${imageIndex + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        ) : null}
+      </div>
 
       <div className="p-5">
         <div className="mb-2 flex items-center justify-between gap-3">

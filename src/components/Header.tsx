@@ -13,7 +13,6 @@ const navItems = [
   { href: "/", label: "Início" },
   { href: "/imoveis", label: "Imóveis" },
   { href: "/sobre", label: "Sobre" },
-  { href: "/#anuncie", label: "Anuncie seu imóvel" },
   { href: "/contato", label: "Contato" },
 ];
 

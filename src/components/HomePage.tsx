@@ -1,16 +1,10 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { Building2, KeyRound, MapPin, MessageCircle, Megaphone, ShieldCheck } from "lucide-react";
-import { useMemo, useState } from "react";
 
 import { ContactForm } from "@/components/ContactForm";
 import { PropertyGrid } from "@/components/PropertyGrid";
-import { SearchBox } from "@/components/SearchBox";
 import { SectionTitle } from "@/components/SectionTitle";
-import { emptySearchFilters, filterImoveis } from "@/lib/filter-properties";
-import { buildWhatsappUrl, ownerWhatsappMessage, resolveWhatsappNumber } from "@/lib/whatsapp";
 import type { SiteContent } from "@/types/content";
 
 type HomePageProps = {
@@ -25,26 +19,23 @@ const differentials = [
 ];
 
 export function HomePage({ content }: HomePageProps) {
-  const [filters, setFilters] = useState(emptySearchFilters);
   const config = content.siteConfig;
   const activeImoveis = content.imoveis.filter((imovel) => imovel.ativo);
-  const featuredImoveis = activeImoveis.filter((imovel) => imovel.destaque);
-  const filteredFeatured = useMemo(() => filterImoveis(featuredImoveis, filters).slice(0, 6), [featuredImoveis, filters]);
-  const ownerUrl = buildWhatsappUrl(resolveWhatsappNumber(config), ownerWhatsappMessage());
+  const featuredImoveis = activeImoveis.filter((imovel) => imovel.destaque).slice(0, 6);
 
   return (
     <>
-      <section className="relative min-h-[92svh] overflow-hidden bg-brand-black pt-28 text-white">
+      <section className="relative min-h-[82svh] overflow-hidden bg-brand-black pt-28 text-white">
         <Image
           src={config.hero.imagem}
           alt="Imóveis em Itajaí"
           fill
           sizes="100vw"
           priority
-          className="object-cover opacity-58"
+          className="object-cover opacity-62"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/78 via-black/56 to-black/25" />
-        <div className="relative mx-auto flex min-h-[calc(92svh-7rem)] max-w-7xl flex-col justify-center px-4 pb-8 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/56 to-black/24" />
+        <div className="relative mx-auto flex min-h-[calc(82svh-7rem)] max-w-7xl flex-col justify-center px-4 pb-12 sm:px-6 lg:px-8">
           <div className="max-w-3xl animate-enter">
             <h1 className="max-w-4xl text-4xl font-bold leading-[1.05] tracking-normal sm:text-5xl lg:text-6xl">
               <span className="hero-brand-title block text-brand-gold">{config.nome}</span>
@@ -53,22 +44,18 @@ export function HomePage({ content }: HomePageProps) {
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/82">{config.hero.subtitulo}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="#imoveis"
-                className="focus-ring inline-flex h-12 items-center justify-center rounded-[8px] bg-brand-gold px-6 text-sm font-bold text-black transition hover:-translate-y-0.5 hover:bg-yellow-300"
+                href="/imoveis?finalidade=locacao"
+                className="focus-ring inline-flex h-12 items-center justify-center rounded-[8px] bg-brand-gold px-8 text-sm font-bold text-black transition hover:-translate-y-0.5 hover:bg-yellow-300"
               >
                 {config.hero.botaoPrimario}
               </Link>
               <Link
-                href="#anuncie"
-                className="focus-ring inline-flex h-12 items-center justify-center rounded-[8px] border border-white/30 px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:border-brand-gold hover:text-brand-gold"
+                href="/imoveis?finalidade=venda"
+                className="focus-ring inline-flex h-12 items-center justify-center rounded-[8px] border border-white/30 px-8 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:border-brand-gold hover:text-brand-gold"
               >
                 {config.hero.botaoSecundario}
               </Link>
             </div>
-          </div>
-
-          <div className="mt-10 max-w-5xl animate-enter-delay">
-            <SearchBox filters={filters} onChange={setFilters} />
           </div>
         </div>
       </section>
@@ -79,7 +66,7 @@ export function HomePage({ content }: HomePageProps) {
             <SectionTitle
               eyebrow="Destaques"
               title="Imóveis em destaque"
-              subtitle="Confira algumas oportunidades selecionadas pela 1000 Imóveis em Itajaí e região."
+              subtitle="Confira as oportunidades selecionadas pela 1000 Imóveis em Itajaí e região."
             />
             <Link
               href="/imoveis"
@@ -88,7 +75,7 @@ export function HomePage({ content }: HomePageProps) {
               Ver todos os imóveis
             </Link>
           </div>
-          <PropertyGrid imoveis={filteredFeatured} config={config} />
+          <PropertyGrid imoveis={featuredImoveis} config={config} />
         </div>
       </section>
 
@@ -129,34 +116,13 @@ export function HomePage({ content }: HomePageProps) {
         </div>
       </section>
 
-      <section id="anuncie" className="bg-brand-black py-20 text-white">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_auto] lg:px-8">
-          <div>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-brand-gold">Anuncie seu imóvel</p>
-            <h2 className="max-w-2xl text-3xl font-bold tracking-normal md:text-4xl">Quer vender ou alugar seu imóvel?</h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/72">
-              Anuncie com a 1000 Imóveis e conte com uma imobiliária local para divulgar seu imóvel de forma simples,
-              rápida e profissional.
-            </p>
-          </div>
-          <a
-            href={ownerUrl}
-            target="_blank"
-            className="focus-ring inline-flex h-12 items-center justify-center gap-2 rounded-[8px] bg-brand-gold px-6 text-sm font-bold text-black transition hover:-translate-y-0.5 hover:bg-yellow-300"
-          >
-            <MessageCircle size={18} />
-            Anunciar pelo WhatsApp
-          </a>
-        </div>
-      </section>
-
       <section className="bg-white py-20">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <SectionTitle
               eyebrow="Contato"
               title="Fale com a 1000 Imóveis"
-              subtitle="Atendimento direto para compra, venda, locação e divulgação de imóveis em Itajaí."
+              subtitle="Atendimento direto para compra, venda e locação de imóveis em Itajaí."
             />
             <div className="mt-8 grid gap-4 text-sm text-neutral-700">
               <InfoRow icon={<MessageCircle size={19} />} label="WhatsApp" value="Atendimento pelo botão verde" />
