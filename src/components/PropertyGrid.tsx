@@ -15,6 +15,7 @@ type DragState = {
   startX: number;
   startY: number;
   scrollLeft: number;
+  startIndex: number;
   mode: "horizontal" | "vertical" | null;
   didDrag: boolean;
 };
@@ -22,6 +23,7 @@ type DragState = {
 export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const dragState = useRef<DragState | null>(null);
+  const animationFrame = useRef<number | null>(null);
   const suppressClick = useRef(false);
 
   if (!imoveis.length) {
@@ -33,6 +35,66 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
     );
   }
 
+  function getSnapPositions(carousel: HTMLDivElement) {
+    const cards = Array.from(carousel.querySelectorAll<HTMLElement>(".property-card"));
+    const firstCard = cards[0];
+
+    if (!firstCard) {
+      return [0];
+    }
+
+    const firstLeft = firstCard.offsetLeft;
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+    return cards.map((card) => Math.max(0, Math.min(maxScroll, card.offsetLeft - firstLeft)));
+  }
+
+  function getClosestSnapIndex(positions: number[], scrollLeft: number) {
+    return positions.reduce((closestIndex, position, index) => {
+      const closestDistance = Math.abs(positions[closestIndex] - scrollLeft);
+      const distance = Math.abs(position - scrollLeft);
+      return distance < closestDistance ? index : closestIndex;
+    }, 0);
+  }
+
+  function stopCarouselAnimation() {
+    if (animationFrame.current) {
+      window.cancelAnimationFrame(animationFrame.current);
+      animationFrame.current = null;
+    }
+  }
+
+  function animateCarouselTo(carousel: HTMLDivElement, target: number) {
+    stopCarouselAnimation();
+
+    const start = carousel.scrollLeft;
+    const distance = target - start;
+
+    if (Math.abs(distance) < 1) {
+      carousel.scrollLeft = target;
+      return;
+    }
+
+    const duration = Math.min(360, Math.max(190, Math.abs(distance) * 0.85));
+    const startedAt = performance.now();
+
+    function tick(now: number) {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      carousel.scrollLeft = start + distance * eased;
+
+      if (progress < 1) {
+        animationFrame.current = window.requestAnimationFrame(tick);
+      } else {
+        carousel.scrollLeft = target;
+        animationFrame.current = null;
+      }
+    }
+
+    animationFrame.current = window.requestAnimationFrame(tick);
+  }
+
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     const carousel = carouselRef.current;
 
@@ -40,11 +102,15 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
       return;
     }
 
+    stopCarouselAnimation();
+    const positions = getSnapPositions(carousel);
+
     dragState.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
       scrollLeft: carousel.scrollLeft,
+      startIndex: getClosestSnapIndex(positions, carousel.scrollLeft),
       mode: null,
       didDrag: false,
     };
@@ -97,6 +163,19 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
     }
 
     if (state.didDrag) {
+      const positions = getSnapPositions(carousel);
+      const dragDistance = state.startX - event.clientX;
+      const currentIndex = getClosestSnapIndex(positions, carousel.scrollLeft);
+      const averageStep = positions[1] ? positions[1] - positions[0] : carousel.clientWidth * 0.82;
+      const traveledCards = Math.max(1, Math.round(Math.abs(carousel.scrollLeft - state.scrollLeft) / averageStep));
+      const direction = dragDistance > 0 ? 1 : -1;
+      const shouldAdvance = Math.abs(dragDistance) > 34;
+      const targetIndex = shouldAdvance
+        ? Math.max(0, Math.min(positions.length - 1, state.startIndex + direction * traveledCards))
+        : currentIndex;
+
+      animateCarouselTo(carousel, positions[targetIndex]);
+
       suppressClick.current = true;
       window.setTimeout(() => {
         suppressClick.current = false;
