@@ -17,7 +17,7 @@ export function PropertyGrid({ imoveis, config }: PropertyGridProps) {
   }
 
   return (
-    <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-3">
+    <div className="property-carousel -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-3 md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-3">
       {imoveis.map((imovel, index) => (
         <PropertyCard key={imovel.id} imovel={imovel} config={config} index={index} />
       ))}
