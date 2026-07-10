@@ -17,6 +17,10 @@
       "imagem": "/images/hero-praia-brava-itajai.jpg",
       "botaoPrimario": "Aluguel",
       "botaoSecundario": "Venda"
+    },
+    "sobre": {
+      "imagemHome": "/images/imovel-casa-cordeiros.jpg",
+      "imagemPagina": "/images/hero-itajai.jpg"
     }
   },
   "imoveis": [

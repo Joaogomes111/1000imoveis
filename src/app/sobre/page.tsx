@@ -19,6 +19,7 @@ const cards = [
 
 export default async function SobrePage() {
   const content = await getContent();
+  const aboutPageImage = content.siteConfig.sobre?.imagemPagina || "/images/hero-itajai.jpg";
 
   return (
     <section className="bg-white pb-20 pt-32">
@@ -37,7 +38,7 @@ export default async function SobrePage() {
         </div>
         <div className="relative aspect-[5/4] overflow-hidden rounded-[8px] bg-neutral-200">
           <Image
-            src="/images/hero-itajai.jpg"
+            src={aboutPageImage}
             alt="Fachada residencial"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"

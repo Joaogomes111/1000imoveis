@@ -138,6 +138,26 @@ export function AdminPanel() {
     });
   }
 
+  function updateSobre<K extends keyof NonNullable<SiteContent["siteConfig"]["sobre"]>>(
+    key: K,
+    value: NonNullable<SiteContent["siteConfig"]["sobre"]>[K],
+  ) {
+    if (!content) {
+      return;
+    }
+
+    updateContent({
+      ...content,
+      siteConfig: {
+        ...content.siteConfig,
+        sobre: {
+          ...content.siteConfig.sobre,
+          [key]: value,
+        },
+      },
+    });
+  }
+
   function addImovel() {
     if (!content) {
       return;
@@ -205,6 +225,40 @@ export function AdminPanel() {
       setMessage("Enviando imagem...");
       const [imageUrl] = await uploadAdminImages([file], "hero");
       updateHero("imagem", imageUrl);
+      setMessage("Imagem enviada. Clique em salvar para publicar.");
+      event.target.value = "";
+    } catch {
+      setMessage("Não foi possível enviar a imagem.");
+    }
+  }
+
+  async function handleAboutHomeImageUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    try {
+      setMessage("Enviando imagem...");
+      const [imageUrl] = await uploadAdminImages([file], "sobre/home");
+      updateSobre("imagemHome", imageUrl);
+      setMessage("Imagem enviada. Clique em salvar para publicar.");
+      event.target.value = "";
+    } catch {
+      setMessage("Não foi possível enviar a imagem.");
+    }
+  }
+
+  async function handleAboutPageImageUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    try {
+      setMessage("Enviando imagem...");
+      const [imageUrl] = await uploadAdminImages([file], "sobre/pagina");
+      updateSobre("imagemPagina", imageUrl);
       setMessage("Imagem enviada. Clique em salvar para publicar.");
       event.target.value = "";
     } catch {
@@ -327,6 +381,7 @@ export function AdminPanel() {
               />
               <TextInput label="Imagem" value={content.siteConfig.hero.imagem} onChange={(value) => updateHero("imagem", value)} />
               <FileInput label="Subir imagem do banner pelo PC" onChange={handleHeroImageUpload} />
+              <DimensionNote text="Banner principal: use imagem horizontal em 1920 x 1080 px ou 1600 x 900 px." />
               <div className="grid gap-4 sm:grid-cols-2">
                 <TextInput
                   label="Botão principal"
@@ -339,6 +394,23 @@ export function AdminPanel() {
                   onChange={(value) => updateHero("botaoSecundario", value)}
                 />
               </div>
+            </AdminCard>
+
+            <AdminCard title="Imagens institucionais">
+              <TextInput
+                label="Imagem da seção Sobre na home"
+                value={content.siteConfig.sobre?.imagemHome ?? "/images/imovel-casa-cordeiros.jpg"}
+                onChange={(value) => updateSobre("imagemHome", value)}
+              />
+              <FileInput label="Subir imagem da home pelo PC" onChange={handleAboutHomeImageUpload} />
+              <DimensionNote text="Sobre na home: use imagem horizontal ou levemente vertical em 1200 x 960 px." />
+              <TextInput
+                label="Imagem da página Sobre"
+                value={content.siteConfig.sobre?.imagemPagina ?? "/images/hero-itajai.jpg"}
+                onChange={(value) => updateSobre("imagemPagina", value)}
+              />
+              <FileInput label="Subir imagem da página Sobre pelo PC" onChange={handleAboutPageImageUpload} />
+              <DimensionNote text="Página Sobre: use imagem horizontal ou levemente vertical em 1200 x 960 px." />
             </AdminCard>
 
             <AdminCard title="Dados gerais">
@@ -462,6 +534,7 @@ export function AdminPanel() {
                     onChange={(value) => updateImovel("imagens", value.split("\n").map((line) => line.trim()).filter(Boolean))}
                   />
                   <FileInput label="Adicionar fotos do PC" multiple onChange={handlePropertyImagesUpload} />
+                  <DimensionNote text="Fotos dos imóveis: use imagens horizontais em 1200 x 900 px ou 1600 x 1200 px." />
                   <div className="grid gap-3 sm:grid-cols-2">
                     <ToggleInput label="Imóvel ativo" checked={selectedImovel.ativo} onChange={(value) => updateImovel("ativo", value)} />
                     <ToggleInput
@@ -525,6 +598,14 @@ function FileInput({
         className="focus-ring rounded-[8px] border border-dashed border-neutral-300 bg-slate-50 px-3 py-3 text-sm text-neutral-700 file:mr-4 file:rounded-[8px] file:border-0 file:bg-brand-black file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
       />
     </label>
+  );
+}
+
+function DimensionNote({ text }: { text: string }) {
+  return (
+    <p className="-mt-2 rounded-[8px] border border-brand-gold/30 bg-brand-cream px-3 py-2 text-xs font-semibold leading-5 text-neutral-700">
+      {text}
+    </p>
   );
 }
 

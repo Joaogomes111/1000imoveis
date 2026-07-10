@@ -20,6 +20,7 @@ const differentials = [
 
 export function HomePage({ content }: HomePageProps) {
   const config = content.siteConfig;
+  const aboutHomeImage = config.sobre?.imagemHome || "/images/imovel-casa-cordeiros.jpg";
   const activeImoveis = content.imoveis.filter((imovel) => imovel.ativo);
   const featuredImoveis = activeImoveis.filter((imovel) => imovel.destaque).slice(0, 6);
 
@@ -83,7 +84,7 @@ export function HomePage({ content }: HomePageProps) {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
           <div className="relative aspect-[5/4] overflow-hidden rounded-[8px] bg-neutral-200">
             <Image
-              src="/images/imovel-casa-cordeiros.jpg"
+              src={aboutHomeImage}
               alt="Atendimento imobiliário"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

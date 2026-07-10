@@ -47,6 +47,10 @@ export type SiteConfig = {
     botaoPrimario: string;
     botaoSecundario: string;
   };
+  sobre?: {
+    imagemHome?: string;
+    imagemPagina?: string;
+  };
 };
 
 export type SiteContent = {
