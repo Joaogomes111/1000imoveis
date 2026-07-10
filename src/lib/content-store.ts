@@ -1,11 +1,24 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
+import { getSupabaseContent, hasSupabaseConfig, saveSupabaseContent } from "@/lib/supabase-store";
 import type { Imovel, SiteContent } from "@/types/content";
 
 const contentPath = path.join(process.cwd(), "content", "site-content.json");
 
 export async function getContent(): Promise<SiteContent> {
+  if (hasSupabaseConfig()) {
+    try {
+      const supabaseContent = await getSupabaseContent();
+
+      if (supabaseContent) {
+        return supabaseContent;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const rawContent = await fs.readFile(contentPath, "utf-8");
   return JSON.parse(rawContent) as SiteContent;
 }
@@ -17,8 +30,10 @@ export async function saveContent(content: SiteContent): Promise<SiteContent> {
     imoveis: content.imoveis.map(normalizeImovel),
   };
 
-  // This file adapter keeps the first version editable without a database.
-  // Replace this function with a Supabase, Firebase or CMS repository in production.
+  if (hasSupabaseConfig()) {
+    return saveSupabaseContent(nextContent);
+  }
+
   await fs.writeFile(contentPath, `${JSON.stringify(nextContent, null, 2)}\n`, "utf-8");
   return nextContent;
 }

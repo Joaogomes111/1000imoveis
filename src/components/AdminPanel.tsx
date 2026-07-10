@@ -200,9 +200,15 @@ export function AdminPanel() {
       return;
     }
 
-    const dataUrl = await readFileAsDataUrl(file);
-    updateHero("imagem", dataUrl);
-    event.target.value = "";
+    try {
+      setMessage("Enviando imagem...");
+      const [imageUrl] = await uploadAdminImages([file], "hero");
+      updateHero("imagem", imageUrl);
+      setMessage("Imagem enviada. Clique em salvar para publicar.");
+      event.target.value = "";
+    } catch {
+      setMessage("Não foi possível enviar a imagem.");
+    }
   }
 
   async function handlePropertyImagesUpload(event: ChangeEvent<HTMLInputElement>) {
@@ -215,9 +221,16 @@ export function AdminPanel() {
       return;
     }
 
-    const dataUrls = await Promise.all(files.map(readFileAsDataUrl));
-    updateImovel("imagens", [...selectedImovel.imagens, ...dataUrls]);
-    event.target.value = "";
+    try {
+      setMessage("Enviando fotos...");
+      const folder = `imoveis/${selectedImovel.slug || selectedImovel.id}`;
+      const imageUrls = await uploadAdminImages(files, folder);
+      updateImovel("imagens", [...selectedImovel.imagens, ...imageUrls]);
+      setMessage("Fotos enviadas. Clique em salvar para publicar.");
+      event.target.value = "";
+    } catch {
+      setMessage("Não foi possível enviar as fotos.");
+    }
   }
 
   if (status === "checking") {
@@ -611,11 +624,29 @@ function slugify(value: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-function readFileAsDataUrl(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
+async function uploadAdminImages(files: File[], folder: string) {
+  const formData = new FormData();
+
+  for (const file of files) {
+    formData.append("files", file);
+  }
+
+  formData.append("folder", folder);
+
+  const response = await fetch("/api/admin/upload", {
+    method: "POST",
+    body: formData,
   });
+
+  if (!response.ok) {
+    throw new Error("Upload failed.");
+  }
+
+  const body = (await response.json()) as { urls?: string[] };
+
+  if (!body.urls?.length) {
+    throw new Error("Upload returned no URLs.");
+  }
+
+  return body.urls;
 }
