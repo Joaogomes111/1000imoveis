@@ -29,7 +29,7 @@ Crie um arquivo `.env.local` na raiz do projeto:
 
 ```env
 ADMIN_PASSWORD=sua-senha-segura
-NEXT_PUBLIC_WHATSAPP_NUMBER=5547999999999
+NEXT_PUBLIC_WHATSAPP_NUMBER=554799779970
 ```
 
 `ADMIN_PASSWORD` libera o login em `/admin`.

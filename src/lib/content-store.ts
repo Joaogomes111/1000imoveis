@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { getSupabaseContent, hasSupabaseConfig, saveSupabaseContent } from "@/lib/supabase-store";
+import { normalizeStoredWhatsappNumber } from "@/lib/whatsapp";
 import type { Imovel, SiteContent } from "@/types/content";
 
 const contentPath = path.join(process.cwd(), "content", "site-content.json");
@@ -12,7 +13,7 @@ export async function getContent(): Promise<SiteContent> {
       const supabaseContent = await getSupabaseContent();
 
       if (supabaseContent) {
-        return supabaseContent;
+        return normalizeContent(supabaseContent);
       }
     } catch (error) {
       console.error(error);
@@ -20,13 +21,14 @@ export async function getContent(): Promise<SiteContent> {
   }
 
   const rawContent = await fs.readFile(contentPath, "utf-8");
-  return JSON.parse(rawContent) as SiteContent;
+  return normalizeContent(JSON.parse(rawContent) as SiteContent);
 }
 
 export async function saveContent(content: SiteContent): Promise<SiteContent> {
   const nextContent: SiteContent = {
     ...content,
     updatedAt: new Date().toISOString(),
+    siteConfig: normalizeSiteConfig(content.siteConfig),
     imoveis: content.imoveis.map(normalizeImovel),
   };
 
@@ -60,6 +62,21 @@ function normalizeImovel(imovel: Imovel): Imovel {
     quartos: numberOrUndefined(imovel.quartos),
     banheiros: numberOrUndefined(imovel.banheiros),
     vagas: numberOrUndefined(imovel.vagas),
+  };
+}
+
+function normalizeContent(content: SiteContent): SiteContent {
+  return {
+    ...content,
+    siteConfig: normalizeSiteConfig(content.siteConfig),
+    imoveis: content.imoveis.map(normalizeImovel),
+  };
+}
+
+function normalizeSiteConfig(siteConfig: SiteContent["siteConfig"]): SiteContent["siteConfig"] {
+  return {
+    ...siteConfig,
+    whatsapp: normalizeStoredWhatsappNumber(siteConfig.whatsapp),
   };
 }
 
