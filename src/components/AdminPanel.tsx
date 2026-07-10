@@ -82,8 +82,9 @@ export function AdminPanel() {
     });
 
     if (!response.ok) {
+      const body = (await response.json().catch(() => null)) as { message?: string } | null;
       setStatus("ready");
-      setMessage("Não foi possível salvar. Faça login novamente.");
+      setMessage(body?.message ?? "Não foi possível salvar. Faça login novamente.");
       return;
     }
 

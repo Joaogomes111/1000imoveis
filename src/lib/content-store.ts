@@ -34,6 +34,10 @@ export async function saveContent(content: SiteContent): Promise<SiteContent> {
     return saveSupabaseContent(nextContent);
   }
 
+  if (process.env.VERCEL) {
+    throw new Error("Supabase não está configurado na Vercel.");
+  }
+
   await fs.writeFile(contentPath, `${JSON.stringify(nextContent, null, 2)}\n`, "utf-8");
   return nextContent;
 }

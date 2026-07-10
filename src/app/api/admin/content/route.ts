@@ -21,7 +21,13 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ message: "Não autorizado." }, { status: 401 });
   }
 
-  const content = (await request.json()) as SiteContent;
-  const savedContent = await saveContent(content);
-  return NextResponse.json(savedContent);
+  try {
+    const content = (await request.json()) as SiteContent;
+    const savedContent = await saveContent(content);
+    return NextResponse.json(savedContent);
+  } catch (error) {
+    console.error(error);
+    const message = error instanceof Error ? error.message : "NÃ£o foi possÃ­vel salvar.";
+    return NextResponse.json({ message }, { status: 500 });
+  }
 }
